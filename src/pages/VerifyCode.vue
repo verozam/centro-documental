@@ -1,7 +1,7 @@
 <template>
   <div class="verify-container">
     <div class="verify-box">
-      <img src="@/assets/minsal-logo.png" alt="MINSAL Logo" class="minsal-logo" />
+      <img src="@/assets/Logo MINSAL.svg" alt="MINSAL Logo" class="minsal-logo" />
       <h2 class="verify-title">Código de verificación</h2>
       <div class="verify-instructions">Escribe el código de 6 dígitos que aparece en tu aplicación:</div>
 
@@ -185,7 +185,7 @@ onUnmounted(() => {
 }
 
 .verify-btn {
-  background-color: #2D52A8;
+  background-color: #2d52a8;
   color: white;
   padding: 0.7rem;
   border: none;

@@ -1,35 +1,33 @@
 <template>
   <div class="login-box">
-    <img src="@/assets/minsal-logo.png" alt="MINSAL Logo" class="minsal-logo" />
+    <img src="@/assets/Logo MINSAL.svg" alt="MINSAL Logo" class="minsal-logo" />
     <div class="login-title">Inicie sesión</div>
     <form @submit.prevent="handleLogin">
       <div class="input-group">
-        <label for="email">Correo electrónico</label>
         <div class="input-wrapper">
-          <span class="icon">👤</span>
+          <svg-icon type="mdi" :path="mdiAccount" color="#000"></svg-icon>
           <input
             v-model="email"
             id="email"
             type="email"
-            placeholder="usuario@salud.gob.sv"
+            placeholder="Correo electrónico"
             required
           />
         </div>
       </div>
 
       <div class="input-group">
-        <label for="password">Contraseña</label>
         <div class="input-wrapper">
-          <span class="icon">🔒</span>
+          <svg-icon type="mdi" :path="mdiLock" color="#000"></svg-icon>
           <input
             :type="showPassword ? 'text' : 'password'"
             v-model="password"
             id="password"
-            placeholder="********"
+            placeholder="Contraseña"
             required
           />
           <button type="button" @click="togglePassword" class="toggle-btn">
-
+            <svg-icon type="mdi" :path="showPassword ? mdiEyeOff : mdiEye"></svg-icon>
           </button>
         </div>
       </div>
@@ -37,6 +35,11 @@
       <button type="submit" class="submit-btn">Ingresar</button>
 
       <a class="link" @click="goToPasswordRecovery">Recuperar contraseña</a>
+
+      <div class="register-link-container">
+        <div class="register-text">¿No eres miembro?</div>
+        <a class="link register-link" @click="goToRegister">Regístrate</a>
+      </div>
 
       <p v-if="error" class="error-msg">{{ error }}</p>
     </form>
@@ -46,6 +49,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import SvgIcon from '@jamescoyle/vue-icon'
+import { mdiAccount, mdiLock, mdiEye, mdiEyeOff } from "@mdi/js";
 
 const email = ref('')
 const password = ref('')
@@ -78,6 +83,14 @@ function handleLogin() {
 function goToPasswordRecovery() {
   router.push('/password-recovery')
 }
+
+// Agrega una nueva función para la navegación al registro
+function goToRegister() {
+  // Aquí va tu lógica de navegación.
+  // Por ejemplo, usando Vue Router:
+  // router.push('/register')
+  console.log('Navegando a la página de registro');
+}
 </script>
 
 <style scoped>
@@ -90,10 +103,18 @@ function goToPasswordRecovery() {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-h2 {
+.minsal-logo {
+  height: 80px;
+  display: block;
+  margin: 0 auto 1rem auto;
+}
+
+.login-title {
+  color: #333A45;
+  font-weight: bold;
+  font-size: 1.5rem;
   text-align: center;
   margin-bottom: 1.5rem;
-  color: #2e3a59;
 }
 
 .input-group {
@@ -109,6 +130,14 @@ h2 {
   background: #f9f9f9;
 }
 
+/* Iconos dentro del input-wrapper */
+.input-wrapper .svg-icon {
+  width: 20px;
+  height: 20px;
+  fill: #000 !important;
+  margin: 0 0.5rem; /* Margen para separar el icono del texto */
+}
+
 .input-wrapper input {
   border: none;
   outline: none;
@@ -118,17 +147,25 @@ h2 {
   font-size: 0.95rem;
 }
 
-.icon {
-  margin-right: 0.5rem;
-  font-size: 1.1rem;
+/* Estilos para el placeholder */
+.input-wrapper input::placeholder {
+  color: #333;
 }
 
 .toggle-btn {
   background: transparent;
   border: none;
-  font-size: 1rem;
   cursor: pointer;
+  padding: 0;
   margin-left: 0.5rem;
+  display: flex; /* Para alinear el icono del botón */
+  align-items: center;
+}
+
+.toggle-btn .svg-icon {
+  fill: #000 !important;
+  width: 20px;
+  height: 20px;
 }
 
 .submit-btn {
@@ -166,17 +203,19 @@ h2 {
   text-align: center;
 }
 
-.minsal-logo {
-  height: 80px;
-  display: block;
-  margin: 0 auto 1rem auto;
+
+/* Contenedor para el texto y el enlace de registro */
+.register-link-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
 }
 
-.login-title {
-  color: #333A45;
-  font-weight: bold;
-  font-size: 1.5rem;
-  text-align: center;
-  margin-bottom: 1.5rem;
+.register-link-container .register-text {
+  color: #333a45; /* El color de tu título */
+  margin-right: 0.25rem; /* Pequeño espacio entre el texto y el enlace */
 }
+
+
 </style>

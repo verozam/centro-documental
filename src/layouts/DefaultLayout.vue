@@ -3,10 +3,11 @@
     <!-- Imagen de fondo cubriendo todo -->
     <div class="background-overlay"></div>
 
-    <!-- Contenido principal con fondo superpuesto -->
+    <!-- Contenido principal con fondo superpuesto <h1>Centro virtual de documentación regulatoria</h1>-->
     <div class="left-panel">
-      <img src="@/assets/logo-documental.png" alt="Centro Documental" class="left-logo" />
-      <h1>Centro virtual de documentación regulatoria</h1>
+      <img src="@/assets/Logo.svg" alt="Centro Documental" class="left-logo" />
+       <h1 id="panel-title"></h1>
+      
     </div>
 
     <div class="right-panel">
@@ -23,7 +24,41 @@
   </div>
 </template>
 
+<script>
+export default {
+  mounted() {
+    // La lógica de JavaScript debe ir en un hook del ciclo de vida, como `mounted()`
+    // Esto asegura que el DOM ya esté cargado antes de intentar manipularlo.
+    const userRole = 'funcionario público'; // o 'funcionario público'
+
+    const titleElement = document.getElementById('panel-title');
+    
+    if (userRole === 'administrador' || userRole === 'colaborador' || userRole === 'consultor') {
+      titleElement.textContent = 'Administración Centro virtual de documentación regulatoria';
+    } else {
+      titleElement.textContent = 'Centro virtual de documentación regulatoria';
+    }
+  }
+}
+</script>
+
 <style scoped>
+
+@font-face {
+  font-family: 'MuseoSans';
+  src: url('@/assets/fonts/MuseoSans.ttf') format('truetype');
+  font-weight: normal; /* Para la versión regular */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MuseoSans';
+  src: url('@/assets/fonts/MuseoSans_700.ttf') format('truetype'); /* Asume este nombre de archivo */
+  font-weight: bold; /* Para la versión negrita */
+  font-style: normal;
+}
+
+
 .layout {
   position: relative;
   display: flex;
@@ -40,11 +75,18 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('@/assets/background.png');
+  /* Combinamos el degradado y la imagen de fondo */
+  background-image: radial-gradient(101.04% 125.8% at 123.42% 69.17%, 
+                                    #6A82BE 0%, 
+                                    rgba(106, 130, 190, 0.95) 58.19%, 
+                                    rgba(106, 130, 190, 0.59) 77.7%, 
+                                    rgba(106, 130, 190, 0.00) 100%),
+                    url('@/assets/LoginBackGroundOriginal.jpg');
   background-size: cover;
   background-position: center;
   z-index: -1;
-  filter: brightness(0.6);
+  /* El filtro brightness ya no sería necesario si el degradado maneja la atenuación */
+  /* filter: brightness(0.6); */ 
 }
 
 /* Panel izquierdo con texto encima del fondo */
@@ -63,10 +105,15 @@
 }
 
 .left-panel h1 {
-  background-color: rgb(255, 255, 255);
+  /* Nuevo estilo de fondo y borde */
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.50) 0%, rgba(255, 255, 255, 0.80) 100%);
+  border-radius: 25px;
+  border-bottom: 2px solid #333A45;
+  color: #333A45; /* Nuevo color para el texto */
+  font-family: 'MuseoSans', sans-serif;
+  font-weight: bold; 
   display: inline-block;
   padding: 1rem 2rem;
-  border-radius: 10px;
   font-size: 1.5rem;
 }
 
@@ -112,10 +159,18 @@ html, body {
   bottom: 0;
   width: 100%;
   text-align: center;
-  background: rgba(0, 0, 0, 0.7);
+  /* Nuevo color de fondo */
+  background: #2d52a8;
   color: white;
   padding: 0.7rem;
   font-size: 0.85rem;
   z-index: 2;
+}
+
+.footer-link {
+  /* Elimina el color predeterminado de los enlaces */
+  color: inherit; 
+  /* Asegura que el texto esté subrayado */
+  text-decoration: underline; 
 }
 </style>

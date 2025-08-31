@@ -1,7 +1,7 @@
 <template>
   <div class="password-container">
     <div class="password-box">
-      <img src="@/assets/minsal-logo.png" alt="MINSAL Logo" class="minsal-logo" />
+      <img src="@/assets/Logo MINSAL.svg" alt="MINSAL Logo" class="minsal-logo" />
       <h2 class="verify-title">Inicio de sesión por primera vez</h2>
       <p class="verify-instructions">Por favor, establezca su nueva contraseña para ingresar al sistema.</p>
 
