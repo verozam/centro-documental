@@ -280,7 +280,7 @@ const go = (path) => {
 
 .search-box {
   position: relative;
-  width: 300px;
+  width: 800px;
 }
 
 .search-box input {

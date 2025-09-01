@@ -41,7 +41,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="cancel-btn" @click="$emit('close')">Cancelar</button>
-        <button type="button" class="save-btn" @click="saveChanges">Guardar</button>
+        <button type="button" class="save-btn" @click="saveChanges">Actualizar</button>
       </div>
     </div>
   </div>

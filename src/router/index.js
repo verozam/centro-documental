@@ -30,9 +30,19 @@ const routes = [
     path: '/admin',
     children: [
       {
+        path: 'sitios-interes',
+        name: 'SitesOfInterest',
+        component: () => import('../pages/dashboard/SitesOfInterest.vue')
+      },
+      {
         path: 'home',
         name: 'AdminHome',
         component: () => import('../pages/dashboard/Home.vue')
+      },
+      {
+        path: 'admindocuments',
+        name: 'ADocuments',
+        component: () => import('../pages/dashboard/AdminDocuments.vue')
       },
       {
         path: 'documents',
@@ -78,6 +88,11 @@ const routes = [
         path: 'dependenciesdocedit',
         name: 'AdminDependenciesEdit',
         component: () => import('../pages/dashboard/DependenciesEdit.vue')
+      },
+      {
+        path: 'auditoria',
+        name: 'AdminAudit',
+        component: () => import('../pages/dashboard/AdminAudit.vue')
       }
     ]
   }
