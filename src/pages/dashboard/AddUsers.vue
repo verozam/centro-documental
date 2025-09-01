@@ -186,7 +186,7 @@ const form = ref({
   rol: [],
   categoria: 'Normativos',
   estadoHabilitado: true,
-  roles: ['Colaborador de documentos Centro Virtual', 'Consulta de documentos Antifazorno'],
+  roles: ['Colaborador de documentos Centro Virtual', 'Consulta de documentos Antisoborno'],
 });
 
 const isDropdownOpen = ref(false);
