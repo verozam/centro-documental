@@ -75,7 +75,7 @@
             <label for="establecimiento">Establecimiento</label>
             <select id="establecimiento" v-model="form.establecimiento">
               <option value="">Seleccione el establecimiento</option>
-              <option value="Est1">Establecimiento 1</option>
+              <option value="Est1">UCSF Ahuachapán AH</option>
             </select>
           </div>
           <div class="form-field">

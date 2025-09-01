@@ -53,6 +53,16 @@ const routes = [
         path: 'reports',
         name: 'AdminReports',
         component: () => import('../pages/dashboard/Reports.vue')
+      },
+      {
+        path: 'dependenciesdoc',
+        name: 'AdminDependencies',
+        component: () => import('../pages/dashboard/DependenciesDoc.vue')
+      },
+      {
+        path: 'dependenciesdocedit',
+        name: 'AdminDependenciesEdit',
+        component: () => import('../pages/dashboard/DependenciesEdit.vue')
       }
     ]
   }

@@ -63,8 +63,8 @@
         <svg-icon type="mdi" :path="mdiFileCode" class="menu-icon"></svg-icon>
         <span v-show="isExpanded">Tipos de documentos</span>
       </li>
-      <li @click="go('/admin/dependencias')">
-        <svg-icon type="mdi" :path="mdiHomeCity" class="menu-icon"></svg-icon>
+      <li @click="go('/admin/dependenciesdoc')">
+        <svg-icon type="mdi" :path="mdiOfficeBuildingMarker" class="menu-icon"></svg-icon>
         <span v-show="isExpanded">Dependencias y <br/>establecimientos</span>
       </li>
       <li @click="go('/admin/auditoria')">
@@ -94,7 +94,8 @@ import {
   mdiHomeCity,
   mdiFormatListChecks,
   mdiChevronRightBoxOutline,
-  mdiBriefcaseArrowUpDownOutline 
+  mdiBriefcaseArrowUpDownOutline,
+  mdiOfficeBuildingMarker 
 } from '@mdi/js';
 
 const router = useRouter();

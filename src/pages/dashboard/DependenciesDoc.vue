@@ -1,27 +1,26 @@
 <template>
-  <div class="list-users-container">
+  <div class="dependencies-container">
     <div class="page-header">
-      <div class="page-title-wrapper">
-        <h2 class="page-title"> 
-          <svg-icon type="mdi" :path="mdiAccountGroup" class="title-icon"></svg-icon> 
-          Listado de usuarios
-        </h2>
+      <div class="page-title-wrapper">        
+        <h2 class="page-title">
+          <svg-icon type="mdi" :path="mdiOfficeBuildingMarker" class="title-icon"></svg-icon>
+          Listado de dependencias y establecimientos</h2>
       </div>
       <div class="header-actions">
         <button class="back-btn" @click="goBack">
           <svg-icon type="mdi" :path="mdiArrowLeft" class="btn-icon"></svg-icon>
           Regresar
         </button>
-        <button class="add-user-btn" @click="go('/admin/adduser')">
-          <svg-icon type="mdi" :path="mdiAccountPlus" class="btn-icon"></svg-icon>
-          Agregar usuario
+        <button class="sync-btn" @click="syncData">
+          <svg-icon type="mdi" :path="mdiSync"></svg-icon>
+          Sincronizar catálogo de dependencias y establecimientos
         </button>
       </div>
     </div>
 
     <div class="filter-section">
       <div class="search-box">
-        <input type="text" placeholder="Buscar en la tabla" v-model="searchQuery" />
+        <input type="text" placeholder="Buscar dependencia o establecimiento" v-model="searchQuery" />
         <svg-icon type="mdi" :path="mdiMagnify" class="search-icon"></svg-icon>
       </div>
     </div>
@@ -34,25 +33,21 @@
         <table class="results-table">
           <thead>
             <tr>
-              <th @click="sortBy('nombres')">Nombres <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
-              <th @click="sortBy('apellidos')">Apellidos <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
-              <th @click="sortBy('rol')">Rol <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
-              <th @click="sortBy('correo')">Correo electrónico <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
-              <th @click="sortBy('telefono')">Teléfono de contacto <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
+              <th @click="sortBy('nombre')">Nombre <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
+              <th @click="sortBy('tipoUnidad')">Tipo de unidad organizativa <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
+              <th @click="sortBy('region')">Región <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
               <th @click="sortBy('estado')">Estado <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
               <th>Acciones <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="user in paginatedUsers" :key="user.id">
-              <td>{{ user.nombres }}</td>
-              <td>{{ user.apellidos }}</td>
-              <td>{{ user.rol }}</td>
-              <td>{{ user.correo }}</td>
-              <td>{{ user.telefono }}</td>
+            <tr v-for="dependency in paginatedDependencies" :key="dependency.id">
+              <td>{{ dependency.nombre }}</td>
+              <td>{{ dependency.tipoUnidad }}</td>
+              <td>{{ dependency.region }}</td>
               <td>
-                <span class="status-badge" :class="user.estado === 'Habilitado' ? 'enabled' : 'disabled'">
-                  {{ user.estado }}
+                <span class="status-badge" :class="dependency.estado === 'Habilitado' ? 'enabled' : 'disabled'">
+                  {{ dependency.estado }}
                 </span>
               </td>
               <td>
@@ -93,9 +88,9 @@ import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import SvgIcon from '@jamescoyle/vue-icon';
 import {
-  mdiAccountGroup,
+  mdiOfficeBuildingMarker,
   mdiArrowLeft,
-  mdiAccountPlus,
+  mdiSync,
   mdiMagnify,
   mdiSwapVertical,
   mdiEye,
@@ -105,30 +100,28 @@ import {
 
 const router = useRouter();
 
-const users = ref([
-  { id: 1, nombres: 'Juan', apellidos: 'Pérez', rol: 'Motorista', correo: 'jperez@dominio.gob.sv', telefono: '####-####', estado: 'Deshabilitado' },
-  { id: 2, nombres: 'Marta', apellidos: 'Gomez', rol: 'Administrador', correo: 'mgomez@dominio.gob.sv', telefono: '####-####', estado: 'Habilitado' },
-  { id: 3, nombres: 'Jose', apellidos: 'Hernandez', rol: 'Consultor', correo: 'jhernandez@dominio.gob.sv', telefono: '####-####', estado: 'Habilitado' },
-  { id: 4, nombres: 'Mario', apellidos: 'Flores', rol: 'Antisoborno', correo: 'mflores@dominio.gob.sv', telefono: '####-####', estado: 'Habilitado' },
-  { id: 5, nombres: 'Rosa', apellidos: 'Lopez', rol: 'Motorista', correo: 'rlopez@dominio.gob.sv', telefono: '####-####', estado: 'Habilitado' },
-  // Agrega más usuarios según necesites
+const dependencies = ref([
+  { id: 1, nombre: 'Despacho Ministerial', tipoUnidad: 'Dependencia', region: 'Dirección Regional de Salud Paracentral', estado: 'Habilitado' },
+  { id: 2, nombre: 'Dirección de Monitoreo Estratégico de Servicios de Salud', tipoUnidad: 'Dependencia', region: 'Dirección Regional de Salud Oriental', estado: 'Deshabilitado' },
+  { id: 3, nombre: 'Viceministerio de Gestión y Desarrollo en Salud', tipoUnidad: 'Establecimiento', region: 'Dirección Regional de Salud Metropolitana', estado: 'Habilitado' },
+  { id: 4, nombre: 'Dirección de Regulación', tipoUnidad: 'Dependencia', region: 'Dirección Regional de Salud Central', estado: 'Habilitado' },
+  { id: 5, nombre: 'Gerencia General', tipoUnidad: 'Dependencia', region: 'Dirección Regional de Salud Occidental', estado: 'Habilitado' },
+  // Agrega más datos de dependencias según necesites
 ]);
 
 const searchQuery = ref('');
-const sortByField = ref('nombres');
+const sortByField = ref('nombre');
 const sortDirection = ref('asc');
 const currentPage = ref(1);
 const rowsPerPage = ref(5);
 
-const filteredUsers = computed(() => {
-  let filtered = users.value.filter(user => {
+const filteredDependencies = computed(() => {
+  let filtered = dependencies.value.filter(dep => {
     const query = searchQuery.value.toLowerCase();
-    return user.nombres.toLowerCase().includes(query) ||
-           user.apellidos.toLowerCase().includes(query) ||
-           user.rol.toLowerCase().includes(query) ||
-           user.correo.toLowerCase().includes(query) ||
-           user.telefono.toLowerCase().includes(query) ||
-           user.estado.toLowerCase().includes(query);
+    return dep.nombre.toLowerCase().includes(query) ||
+           dep.tipoUnidad.toLowerCase().includes(query) ||
+           dep.region.toLowerCase().includes(query) ||
+           dep.estado.toLowerCase().includes(query);
   });
 
   return filtered.sort((a, b) => {
@@ -140,20 +133,20 @@ const filteredUsers = computed(() => {
   });
 });
 
-const paginatedUsers = computed(() => {
+const paginatedDependencies = computed(() => {
   const start = (currentPage.value - 1) * rowsPerPage.value;
   const end = start + rowsPerPage.value;
-  return filteredUsers.value.slice(start, end);
+  return filteredDependencies.value.slice(start, end);
 });
 
 const totalPages = computed(() => {
-  return Math.ceil(filteredUsers.value.length / rowsPerPage.value);
+  return Math.ceil(filteredDependencies.value.length / rowsPerPage.value);
 });
 
 const paginationInfo = computed(() => {
   const start = (currentPage.value - 1) * rowsPerPage.value + 1;
-  const end = Math.min(start + rowsPerPage.value - 1, filteredUsers.value.length);
-  return `Filas por página: ${rowsPerPage.value}  ${start}-${end} de ${filteredUsers.value.length}`;
+  const end = Math.min(start + rowsPerPage.value - 1, filteredDependencies.value.length);
+  return `Filas por página: ${rowsPerPage.value}  ${start}-${end} de ${filteredDependencies.value.length}`;
 });
 
 const sortBy = (field) => {
@@ -187,18 +180,14 @@ const goBack = () => {
   router.back();
 };
 
-const addNewUser = () => {
-  // Lógica para navegar a la página de agregar usuario
-  alert('Navegando a la página de agregar usuario...');
-};
-
-const go = (path) => {
-  router.push(path);
+const syncData = () => {
+  alert('Sincronizando catálogo de dependencias...');
+  // Aquí puedes agregar la lógica para llamar a tu API
 };
 </script>
 
 <style scoped>
-.list-users-container {
+.dependencies-container {
   padding: 2rem;
   background-color: #f1f5f9;
   min-height: 100vh;
@@ -234,7 +223,7 @@ const go = (path) => {
   gap: 1rem;
 }
 
-.back-btn, .add-user-btn {
+.back-btn, .sync-btn {
   border: none;
   border-radius: 8px;
   padding: 0.5rem 1rem;
@@ -256,14 +245,14 @@ const go = (path) => {
   background-color: #e5e7eb;
 }
 
-.add-user-btn {
-  background-color: #2d68ff;
-  color: white;
-  box-shadow: 0 4px 6px rgba(45, 104, 255, 0.2);
+.sync-btn {
+  background-color: transparent;
+  color: #4b5563;
+  border: 1px solid #d1d5db;
 }
 
-.add-user-btn:hover {
-  background-color: #1e56e0;
+.sync-btn:hover {
+  background-color: #e5e7eb;
 }
 
 .btn-icon {
@@ -280,7 +269,7 @@ const go = (path) => {
 
 .search-box {
   position: relative;
-  width: 300px;
+  width: 800px;
 }
 
 .search-box input {
