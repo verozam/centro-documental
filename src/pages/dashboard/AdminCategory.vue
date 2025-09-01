@@ -1,27 +1,27 @@
 <template>
-  <div class="dependencies-container">
+  <div class="categories-container">
     <div class="page-header">
-      <div class="page-title-wrapper">        
+      <div class="page-title-wrapper">
         <h2 class="page-title">
-          <svg-icon type="mdi" :path="mdiOfficeBuildingMarker" class="title-icon"></svg-icon>
-          Listado de dependencias y establecimientos</h2>
+            <svg-icon type="mdi" :path="mdiFormatListBulleted" class="title-icon"></svg-icon>
+            Listado de categorías</h2>
       </div>
       <div class="header-actions">
         <button class="back-btn" @click="goBack">
           <svg-icon type="mdi" :path="mdiArrowLeft" class="btn-icon"></svg-icon>
           Regresar
         </button>
-        <button class="sync-btn" @click="showSyncModal = true">
-          <svg-icon type="mdi" :path="mdiSync"></svg-icon>
-          Sincronizar catálogo de dependencias y establecimientos
+        <button class="add-btn" @click="showModal = true">
+          <svg-icon type="mdi" :path="mdiPlus" class="btn-icon"></svg-icon>
+          Agregar categoría
         </button>
       </div>
-      <DependenciesDocSincronizar v-if="showSyncModal" @close="showSyncModal = false" @accept="handleSync"/>
+       <CategoryModal v-if="showModal" @close="showModal = false" @save="handleSaveCategory" />    
     </div>
 
     <div class="filter-section">
       <div class="search-box">
-        <input type="text" placeholder="Buscar dependencia o establecimiento" v-model="searchQuery" />
+        <input type="text" placeholder="Buscar en la tabla" v-model="searchQuery" />
         <svg-icon type="mdi" :path="mdiMagnify" class="search-icon"></svg-icon>
       </div>
     </div>
@@ -34,28 +34,28 @@
         <table class="results-table">
           <thead>
             <tr>
-              <th @click="sortBy('nombre')">Nombre <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
-              <th @click="sortBy('tipoUnidad')">Tipo de unidad organizativa <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
-              <th @click="sortBy('region')">Región <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
+              <th @click="sortBy('categoria')">Categorías <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
+              <th @click="sortBy('usuario')">Usuario que registró <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
+              <th @click="sortBy('fecha')">Fecha de creación <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
               <th @click="sortBy('estado')">Estado <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
               <th>Acciones <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="dependency in paginatedDependencies" :key="dependency.id">
-              <td>{{ dependency.nombre }}</td>
-              <td>{{ dependency.tipoUnidad }}</td>
-              <td>{{ dependency.region }}</td>
+            <tr v-for="category in paginatedCategories" :key="category.id">
+              <td>{{ category.categoria }}</td>
+              <td>{{ category.usuario }}</td>
+              <td>{{ category.fecha }}</td>
               <td>
-                <span class="status-badge" :class="dependency.estado === 'Habilitado' ? 'enabled' : 'disabled'">
-                  {{ dependency.estado }}
+                <span class="status-badge" :class="category.estado === 'Habilitado' ? 'enabled' : 'disabled'">
+                  {{ category.estado }}
                 </span>
               </td>
               <td>
                 <div class="action-buttons">
+                  <button class="action-btn view-btn" @click="showModal = true"><svg-icon type="mdi" :path="mdiEye"></svg-icon></button>
+                  <button class="action-btn edit-btn"><svg-icon type="mdi" :path="mdiPencil"></svg-icon></button>
                   <button class="action-btn delete-btn"><svg-icon type="mdi" :path="mdiCloseCircle"></svg-icon></button>
-                  <button class="action-btn view-btn"><svg-icon type="mdi" :path="mdiEye"></svg-icon></button>
-                  <button class="action-btn edit-btn" @click="go('/admin/dependenciesdocedit')"><svg-icon type="mdi" :path="mdiPencil"></svg-icon></button>
                 </div>
               </td>
             </tr>
@@ -88,47 +88,42 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import SvgIcon from '@jamescoyle/vue-icon';
-import DependenciesDocSincronizar from './DependenciesDocSincronizar.vue';
+import CategoryModal from './CategoryModal.vue'; // Asegúrate de que la ruta sea correcta
 import {
-  mdiOfficeBuildingMarker,
+  mdiFormatListBulleted,
   mdiArrowLeft,
-  mdiSync,
+  mdiPlus,
   mdiMagnify,
   mdiSwapVertical,
   mdiEye,
   mdiPencil,
   mdiCloseCircle,
-  mdiAlertCircleOutline,
 } from '@mdi/js';
-
-const go = (path) => {
-  router.push(path);
-};
 
 const router = useRouter();
 
-const dependencies = ref([
-  { id: 1, nombre: 'Despacho Ministerial', tipoUnidad: 'Dependencia', region: 'Dirección Regional de Salud Paracentral', estado: 'Habilitado' },
-  { id: 2, nombre: 'Dirección de Monitoreo Estratégico de Servicios de Salud', tipoUnidad: 'Dependencia', region: 'Dirección Regional de Salud Oriental', estado: 'Deshabilitado' },
-  { id: 3, nombre: 'Viceministerio de Gestión y Desarrollo en Salud', tipoUnidad: 'Establecimiento', region: 'Dirección Regional de Salud Metropolitana', estado: 'Habilitado' },
-  { id: 4, nombre: 'Dirección de Regulación', tipoUnidad: 'Dependencia', region: 'Dirección Regional de Salud Central', estado: 'Habilitado' },
-  { id: 5, nombre: 'Gerencia General', tipoUnidad: 'Dependencia', region: 'Dirección Regional de Salud Occidental', estado: 'Habilitado' },
-  // Agrega más datos de dependencias según necesites
+const categories = ref([
+  { id: 1, categoria: 'Normativos', usuario: 'administrador@salud.gob.sv', fecha: '25/02/2024', estado: 'Deshabilitado' },
+  { id: 2, categoria: 'Leyes', usuario: 'administrador@salud.gob.sv', fecha: '25/02/2024', estado: 'Habilitado' },
+  { id: 3, categoria: 'Estratégicos', usuario: 'administrador@salud.gob.sv', fecha: '25/02/2024', estado: 'Habilitado' },
+  { id: 4, categoria: 'Organizaciones y funciones', usuario: 'administrador@salud.gob.sv', fecha: '25/02/2024', estado: 'Habilitado' },
+  { id: 5, categoria: 'Practica Clínico', usuario: 'administrador@salud.gob.sv', fecha: '25/02/2024', estado: 'Habilitado' },
+  // Agrega más categorías según necesites
 ]);
 
 const searchQuery = ref('');
-const sortByField = ref('nombre');
+const sortByField = ref('categoria');
 const sortDirection = ref('asc');
 const currentPage = ref(1);
 const rowsPerPage = ref(5);
 
-const filteredDependencies = computed(() => {
-  let filtered = dependencies.value.filter(dep => {
+const filteredCategories = computed(() => {
+  let filtered = categories.value.filter(category => {
     const query = searchQuery.value.toLowerCase();
-    return dep.nombre.toLowerCase().includes(query) ||
-           dep.tipoUnidad.toLowerCase().includes(query) ||
-           dep.region.toLowerCase().includes(query) ||
-           dep.estado.toLowerCase().includes(query);
+    return category.categoria.toLowerCase().includes(query) ||
+           category.usuario.toLowerCase().includes(query) ||
+           category.fecha.toLowerCase().includes(query) ||
+           category.estado.toLowerCase().includes(query);
   });
 
   return filtered.sort((a, b) => {
@@ -140,20 +135,20 @@ const filteredDependencies = computed(() => {
   });
 });
 
-const paginatedDependencies = computed(() => {
+const paginatedCategories = computed(() => {
   const start = (currentPage.value - 1) * rowsPerPage.value;
   const end = start + rowsPerPage.value;
-  return filteredDependencies.value.slice(start, end);
+  return filteredCategories.value.slice(start, end);
 });
 
 const totalPages = computed(() => {
-  return Math.ceil(filteredDependencies.value.length / rowsPerPage.value);
+  return Math.ceil(filteredCategories.value.length / rowsPerPage.value);
 });
 
 const paginationInfo = computed(() => {
   const start = (currentPage.value - 1) * rowsPerPage.value + 1;
-  const end = Math.min(start + rowsPerPage.value - 1, filteredDependencies.value.length);
-  return `Filas por página: ${rowsPerPage.value}  ${start}-${end} de ${filteredDependencies.value.length}`;
+  const end = Math.min(start + rowsPerPage.value - 1, filteredCategories.value.length);
+  return `Filas por página: ${rowsPerPage.value}  ${start}-${end} de ${filteredCategories.value.length}`;
 });
 
 const sortBy = (field) => {
@@ -187,28 +182,24 @@ const goBack = () => {
   router.back();
 };
 
+const showModal = ref(false);
 
-//Modal de sincronización
-const showSyncModal = ref(false);
-
-const handleSync = () => {
-  // Lógica para realizar la sincronización
-  alert('Iniciando sincronización...');
-
-  // Ocultar el modal después de la acción
-  showSyncModal.value = false;
+const handleSaveCategory = (newCategory) => {
+  // Lógica para guardar la nueva categoría, por ejemplo, enviarla a una API
+  console.log('Nueva categoría guardada:', newCategory);
+  
+  // Ocultar el modal
+  showModal.value = false;
 };
 
-
-
-const syncData = () => {
-  alert('Sincronizando catálogo de dependencias...');
-  // Aquí puedes agregar la lógica para llamar a tu API
+const addNewCategory = () => {
+  // Lógica para navegar a la página de agregar categoría
+  alert('Navegando a la página de agregar categoría...');
 };
 </script>
 
 <style scoped>
-.dependencies-container {
+.categories-container {
   padding: 2rem;
   background-color: #f1f5f9;
   min-height: 100vh;
@@ -244,7 +235,7 @@ const syncData = () => {
   gap: 1rem;
 }
 
-.back-btn, .sync-btn {
+.back-btn, .add-btn {
   border: none;
   border-radius: 8px;
   padding: 0.5rem 1rem;
@@ -266,15 +257,14 @@ const syncData = () => {
   background-color: #e5e7eb;
 }
 
-.sync-btn {
-  background-color: transparent;
-  color: #4b5563;
-  border: 1px solid #d1d5db;
-}
-
-.sync-btn:hover {
+.add-btn {
   background-color: #2d68ff;
   color: white;
+  box-shadow: 0 4px 6px rgba(45, 104, 255, 0.2);
+}
+
+.add-btn:hover {
+  background-color: #1e56e0;
 }
 
 .btn-icon {

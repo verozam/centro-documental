@@ -59,7 +59,7 @@
                 <div class="action-buttons">
                   <button class="action-btn delete-btn"><svg-icon type="mdi" :path="mdiCloseCircle"></svg-icon></button>
                   <button class="action-btn view-btn"><svg-icon type="mdi" :path="mdiEye"></svg-icon></button>
-                  <button class="action-btn edit-btn"><svg-icon type="mdi" :path="mdiPencil"></svg-icon></button>
+                  <button class="action-btn edit-btn" @click="go('/admin/edituser')"><svg-icon type="mdi" :path="mdiPencil"></svg-icon></button>
                 </div>
               </td>
             </tr>

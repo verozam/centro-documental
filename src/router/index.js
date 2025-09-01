@@ -40,6 +40,11 @@ const routes = [
         component: () => import('../pages/dashboard/Documents.vue')
       },
       {
+        path: 'categorias',
+        name: 'AdminCategories',
+        component: () => import('../pages/dashboard/AdminCategory.vue')
+      },
+      {
         path: 'users',
         name: 'AdminUsers',
         component: () => import('../pages/dashboard/UsersList.vue')
@@ -48,6 +53,11 @@ const routes = [
         path: 'adduser',
         name: 'AddUsers',
         component: () => import('../pages/dashboard/AddUsers.vue')
+      },
+      {
+        path: 'edituser',
+        name: 'EditUsers',
+        component: () => import('../pages/dashboard/EditUsers.vue')
       },
       {
         path: 'reports',

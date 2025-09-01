@@ -27,7 +27,7 @@
             <div class="form-field">
               <label for="sibasi">SIBASI</label>
               <select id="sibasi" v-model="form.sibasi">
-                <option value="">SIBASI Ahuachapán</option>
+                <option value="SIBASI Ahuachapán">SIBASI Ahuachapán</option>
                 <option value="Sibasi2">SIBASI Santa Ana</option>
                 <option value="Sibasi3">SIBASI Sonsonate</option>
               </select>
@@ -35,7 +35,7 @@
             <div class="form-field">
               <label for="tipoOrganizacion">Tipo de organización</label>
               <select id="tipoOrganizacion" v-model="form.tipoOrganizacion">
-                <option value="">Dependencia</option>
+                <option value="Dependencia">Dependencia</option>
               </select>
             </div>
             <div class="form-field">
@@ -49,7 +49,7 @@
             <div class="form-field">
               <label for="departamento">Departamento</label>
               <select id="departamento" v-model="form.departamento">
-                <option value="">San Salvador</option>
+                <option value="San Salvador">San Salvador</option>
                 <option value="">Ahuachapán</option>
                 <option value="">Cabañas</option>
                 <option value="">Chalatenango</option>
@@ -82,7 +82,7 @@
             <div class="form-field">
               <label for="region">Región</label>
               <select id="region" v-model="form.region">
-                <option value="Region1">Región de salud occidental</option>
+                <option value="Región Salud Occidente">Región de salud occidental</option>
                 <option value="Region2">Región de salud central</option>
                 <option value="Region3">Región de salud metropolitana</option>
                 <option value="Region4">Región de salud oriental</option>
@@ -94,7 +94,7 @@
             <div class="form-field">
               <label for="establecimiento">Establecimiento</label>
               <select id="establecimiento" v-model="form.establecimiento">
-                <option value="">UCSF Ahuachapán AH</option>
+                <option value="UCSF Ahuachapán AH">UCSF Ahuachapán AH</option>
               </select>
             </div>
             <div class="form-field">
@@ -105,7 +105,7 @@
                 <option value="">Unidad</option>
                 <option value="">Centro</option>
                 <option value="">Área</option>
-                <option value="">Viceministerio</option>
+                <option value="Viceministerio">Viceministerio</option>
                 <option value="">Gerencia</option>
                 <option value="">Despacho</option>
               </select>
@@ -121,7 +121,7 @@
             <div class="form-field">
               <label for="municipio">Municipio</label>
               <select id="municipio" v-model="form.municipio">
-                <option value="">San Salvador</option>
+                <option value="San Salvador">San Salvador</option>
                 <option value="">Aguilares</option>
                 <option value="">El Paisnal</option>
                 <option value="">Guazapa</option>
