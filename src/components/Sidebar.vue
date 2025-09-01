@@ -19,7 +19,7 @@
         <svg-icon type="mdi" :path="mdiBookmarkMultiple" class="menu-icon"></svg-icon>
         <span v-show="isExpanded">Sitios de interés</span>
       </li>
-      <li @click="go('/admin/documents')">
+      <li @click="go('/admin/admindocuments')">
         <svg-icon type="mdi" :path="mdiFileDocument" class="menu-icon"></svg-icon>
         <span v-show="isExpanded">Documentos</span>
       </li>
@@ -59,7 +59,7 @@
         <svg-icon type="mdi" :path="mdiAccountGroup" class="menu-icon"></svg-icon>
         <span v-show="isExpanded">Usuarios</span>
       </li>
-      <li @click="go('/admin/tipos-documentos')">
+      <li @click="go('/admin/documents')">
         <svg-icon type="mdi" :path="mdiFileCode" class="menu-icon"></svg-icon>
         <span v-show="isExpanded">Tipos de documentos</span>
       </li>

@@ -45,6 +45,11 @@ const routes = [
         component: () => import('../pages/dashboard/AdminCategory.vue')
       },
       {
+        path: 'subcategorias',
+        name: 'AdminSubCategories',
+        component: () => import('../pages/dashboard/SubCategory.vue')
+      },
+      {
         path: 'users',
         name: 'AdminUsers',
         component: () => import('../pages/dashboard/UsersList.vue')

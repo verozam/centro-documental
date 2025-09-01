@@ -1,9 +1,10 @@
 <template>
-  <div class="documents-container">
+  <div class="subcategories-container">
     <div class="page-header">
       <div class="page-title-wrapper">
-        <h2 class="page-title"><svg-icon type="mdi" :path="mdiFileDocumentMultiple" class="title-icon"></svg-icon>
-          Listado de tipo de documentos
+        <h2 class="page-title">
+            <svg-icon type="mdi" :path="mdiBriefcaseArrowUpDownOutline" class="title-icon"></svg-icon>
+            Listado de subcategorías
         </h2>
       </div>
       <div class="header-actions">
@@ -11,17 +12,16 @@
           <svg-icon type="mdi" :path="mdiArrowLeft" class="btn-icon"></svg-icon>
           Regresar
         </button>
-        <button class="add-btn" @click="showAddDocumentTypeModal = true">
+        <button class="add-btn" @click="showAddSubCategoryModal = true">
           <svg-icon type="mdi" :path="mdiPlus" class="btn-icon"></svg-icon>
-          Agregar tipo de documento
+          Agregar subcategoría
         </button>
       </div>
-       <AddDocumentTypeModal v-if="showAddDocumentTypeModal" @close="showAddDocumentTypeModal = false" @save="handleSaveDocumentType"/>
     </div>
 
     <div class="filter-section">
       <div class="search-box">
-        <input type="text" placeholder="Buscar dentro de la tabla" v-model="searchQuery" />
+        <input type="text" placeholder="Buscar en la tabla" v-model="searchQuery" />
         <svg-icon type="mdi" :path="mdiMagnify" class="search-icon"></svg-icon>
       </div>
     </div>
@@ -34,8 +34,8 @@
         <table class="results-table">
           <thead>
             <tr>
-              <th @click="sortBy('tipoDocumento')">Tipo de documento <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
-              <th @click="sortBy('codigo')">Código <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
+              <th @click="sortBy('subcategoria')">Subcategorías <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
+              <th @click="sortBy('categoria')">Categoría <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
               <th @click="sortBy('usuario')">Usuario que registró <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
               <th @click="sortBy('fecha')">Fecha de creación <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
               <th @click="sortBy('estado')">Estado <svg-icon type="mdi" :path="mdiSwapVertical"></svg-icon></th>
@@ -43,20 +43,20 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="docType in paginatedDocumentTypes" :key="docType.id">
-              <td>{{ docType.tipoDocumento }}</td>
-              <td>{{ docType.codigo }}</td>
-              <td>{{ docType.usuario }}</td>
-              <td>{{ docType.fecha }}</td>
+            <tr v-for="subCategory in paginatedSubCategories" :key="subCategory.id">
+              <td>{{ subCategory.subcategoria }}</td>
+              <td>{{ subCategory.categoria }}</td>
+              <td>{{ subCategory.usuario }}</td>
+              <td>{{ subCategory.fecha }}</td>
               <td>
-                <span class="status-badge" :class="docType.estado === 'Habilitado' ? 'enabled' : 'disabled'">
-                  {{ docType.estado }}
+                <span class="status-badge" :class="subCategory.estado === 'Habilitado' ? 'enabled' : 'disabled'">
+                  {{ subCategory.estado }}
                 </span>
               </td>
               <td>
                 <div class="action-buttons">
                   <button class="action-btn view-btn"><svg-icon type="mdi" :path="mdiEye"></svg-icon></button>
-                  <button class="action-btn edit-btn" @click="editDocumentType(docType)"><svg-icon type="mdi" :path="mdiPencil"></svg-icon></button>
+                  <button class="action-btn edit-btn"><svg-icon type="mdi" :path="mdiPencil"></svg-icon></button>
                   <button class="action-btn delete-btn"><svg-icon type="mdi" :path="mdiCloseCircle"></svg-icon></button>
                 </div>
               </td>
@@ -83,7 +83,11 @@
         </div>
       </div>
     </div>
-    <EditDocumentTypeModal v-if="showEditModal" :documentType="selectedDocumentType" @close="showEditModal = false" @save="handleSaveEdit"/>
+    <AddSubCategoryModal
+      v-if="showAddSubCategoryModal"
+      @close="showAddSubCategoryModal = false"
+      @save="handleSaveSubCategory"
+    />
   </div>
 </template>
 
@@ -91,10 +95,10 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import SvgIcon from '@jamescoyle/vue-icon';
-import AddDocumentTypeModal from './AddDocumentTypeModal.vue';
-import EditDocumentTypeModal from './EditDocumentTypeModal.vue';
+import AddSubCategoryModal from './AddSubCategoryModal.vue';
 import {
-  mdiFileDocumentMultiple,
+  mdiFormatListBulleted,
+  mdiBriefcaseArrowUpDownOutline,
   mdiArrowLeft,
   mdiPlus,
   mdiMagnify,
@@ -102,34 +106,33 @@ import {
   mdiEye,
   mdiPencil,
   mdiCloseCircle,
-  mdiFileDocument,
 } from '@mdi/js';
 
 const router = useRouter();
 
-const documentTypes = ref([
-  { id: 1, tipoDocumento: 'Políticas', codigo: 'POL', usuario: 'usuario@salud.gob.sv', fecha: '25/02/2024', estado: 'Deshabilitado' },
-  { id: 2, tipoDocumento: 'Manual del Sistema de Gestión Antisoborno', codigo: 'MAN', usuario: 'usuario@salud.gob.sv', fecha: '25/02/2024', estado: 'Habilitado' },
-  { id: 3, tipoDocumento: 'Manual de procesos y procedimientos', codigo: 'MPP', usuario: 'usuario@salud.gob.sv', fecha: '25/02/2024', estado: 'Habilitado' },
-  { id: 4, tipoDocumento: 'Manual de procedimientos', codigo: 'MP', usuario: 'usuario@salud.gob.sv', fecha: '25/02/2024', estado: 'Habilitado' },
-  { id: 5, tipoDocumento: 'Lineamientos', codigo: 'LIN', usuario: 'usuario@salud.gob.sv', fecha: '25/02/2024', estado: 'Habilitado' },
-  // Agrega más tipos de documentos según necesites
+const subCategories = ref([
+  { id: 1, subcategoria: 'Leyes', categoria: 'Propiamente regulatorios', usuario: 'usuario@salud.gob.sv', fecha: '25/02/2024', estado: 'Deshabilitado' },
+  { id: 2, subcategoria: 'Reglamentos técnicos centroamericanos', categoria: 'Propiamente regulatorios', usuario: 'usuario@salud.gob.sv', fecha: '25/02/2024', estado: 'Habilitado' },
+  { id: 3, subcategoria: 'Reglamentos', categoria: 'Propiamente regulatorios', usuario: 'usuario@salud.gob.sv', fecha: '25/02/2024', estado: 'Habilitado' },
+  { id: 4, subcategoria: 'Reglamentos técnicos salvadoreños', categoria: 'Propiamente regulatorios', usuario: 'usuario@salud.gob.sv', fecha: '25/02/2024', estado: 'Habilitado' },
+  { id: 5, subcategoria: 'Normas técnicas', categoria: 'Propiamente regulatorios', usuario: 'usuario@salud.gob.sv', fecha: '25/02/2024', estado: 'Habilitado' },
+  // Agrega más subcategorías según necesites
 ]);
 
 const searchQuery = ref('');
-const sortByField = ref('tipoDocumento');
+const sortByField = ref('subcategoria');
 const sortDirection = ref('asc');
 const currentPage = ref(1);
 const rowsPerPage = ref(5);
 
-const filteredDocumentTypes = computed(() => {
-  let filtered = documentTypes.value.filter(doc => {
+const filteredSubCategories = computed(() => {
+  let filtered = subCategories.value.filter(subCat => {
     const query = searchQuery.value.toLowerCase();
-    return doc.tipoDocumento.toLowerCase().includes(query) ||
-           doc.codigo.toLowerCase().includes(query) ||
-           doc.usuario.toLowerCase().includes(query) ||
-           doc.fecha.toLowerCase().includes(query) ||
-           doc.estado.toLowerCase().includes(query);
+    return subCat.subcategoria.toLowerCase().includes(query) ||
+           subCat.categoria.toLowerCase().includes(query) ||
+           subCat.usuario.toLowerCase().includes(query) ||
+           subCat.fecha.toLowerCase().includes(query) ||
+           subCat.estado.toLowerCase().includes(query);
   });
 
   return filtered.sort((a, b) => {
@@ -141,20 +144,20 @@ const filteredDocumentTypes = computed(() => {
   });
 });
 
-const paginatedDocumentTypes = computed(() => {
+const paginatedSubCategories = computed(() => {
   const start = (currentPage.value - 1) * rowsPerPage.value;
   const end = start + rowsPerPage.value;
-  return filteredDocumentTypes.value.slice(start, end);
+  return filteredSubCategories.value.slice(start, end);
 });
 
 const totalPages = computed(() => {
-  return Math.ceil(filteredDocumentTypes.value.length / rowsPerPage.value);
+  return Math.ceil(filteredSubCategories.value.length / rowsPerPage.value);
 });
 
 const paginationInfo = computed(() => {
   const start = (currentPage.value - 1) * rowsPerPage.value + 1;
-  const end = Math.min(start + rowsPerPage.value - 1, filteredDocumentTypes.value.length);
-  return `Filas por página: ${rowsPerPage.value}  ${start}-${end} de ${filteredDocumentTypes.value.length}`;
+  const end = Math.min(start + rowsPerPage.value - 1, filteredSubCategories.value.length);
+  return `Filas por página: ${rowsPerPage.value}  ${start}-${end} de ${filteredSubCategories.value.length}`;
 });
 
 const sortBy = (field) => {
@@ -188,43 +191,24 @@ const goBack = () => {
   router.back();
 };
 
-const showAddDocumentTypeModal = ref(false);
+const showAddSubCategoryModal = ref(false);
 
-const handleSaveDocumentType = (newDocType) => {
-  // Lógica para guardar el nuevo tipo de documento
-  console.log('Nuevo tipo de documento guardado:', newDocType);
-
-  // Ocultar el modal
-  showAddDocumentTypeModal.value = false;
-};
-
-const showEditModal = ref(false);
-const selectedDocumentType = ref(null);
-
-const editDocumentType = (docType) => {
-  selectedDocumentType.value = { ...docType };
-  showEditModal.value = true;
-};
-
-const handleSaveEdit = (editedDocType) => {
-  // Aquí debes implementar la lógica para guardar los cambios en tu lista de datos
-  const index = documentTypes.value.findIndex(d => d.id === editedDocType.id);
-  if (index !== -1) {
-    documentTypes.value[index] = editedDocType;
-  }
+const handleSaveSubCategory = (newSubCategory) => {
+  // Lógica para guardar la nueva subcategoría, por ejemplo, enviarla a una API
+  console.log('Nueva subcategoría guardada:', newSubCategory);
   
   // Ocultar el modal
-  showEditModal.value = false;
+  showAddSubCategoryModal.value = false;
 };
 
-const addNewDocumentType = () => {
-  // Lógica para navegar a la página de agregar tipo de documento
-  alert('Navegando a la página de agregar tipo de documento...');
+const addNewSubCategory = () => {
+  // Lógica para navegar a la página de agregar subcategoría
+  alert('Navegando a la página de agregar subcategoría...');
 };
 </script>
 
 <style scoped>
-.documents-container {
+.subcategories-container {
   padding: 2rem;
   background-color: #f1f5f9;
   min-height: 100vh;

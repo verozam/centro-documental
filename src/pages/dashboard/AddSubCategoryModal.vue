@@ -2,27 +2,34 @@
   <div class="modal-overlay" @click.self="$emit('close')">
     <div class="modal-card">
       <div class="modal-header">
-        <h3 class="modal-title">
-            <svg-icon type="mdi" :path="mdiFormatListBulleted" class="title-icon"></svg-icon>
-            Agregar categoría
-        </h3>
+        <div class="modal-title-wrapper">
+          <svg-icon type="mdi" :path="mdiFormatListBulleted" class="title-icon"></svg-icon>
+          <h3 class="modal-title">Agregar una subcategoría</h3>
+        </div>
         <button class="modal-close" @click="$emit('close')">&times;</button>
       </div>
       <div class="modal-body">
-        <form @submit.prevent="saveCategory">
+        <form @submit.prevent="saveSubCategory">
           <div class="form-field">
-            <label for="categoryName">Nombre de la categoría*</label>
-            <input type="text" id="categoryName" v-model="form.name" placeholder="Estratégicos" required />
+            <label for="subCategoryName">Nombre de la subcategoría*</label>
+            <input type="text" id="subCategoryName" v-model="form.name" placeholder="Planes" required />
           </div>
           <div class="form-field">
-            <label for="categoryDescription">Descripción de la categoría*</label>
-            <textarea id="categoryDescription" v-model="form.description" required></textarea>
+            <label for="categorySelect">Seleccionar categoría*</label>
+            <select id="categorySelect" v-model="form.category" required>
+              <option value="" disabled>Seleccione la categoría a la que pertenece la subcategoría</option>
+              <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="subCategoryDescription">Descripción de la subcategoría*</label>
+            <textarea id="subCategoryDescription" v-model="form.description" placeholder="Sub categoría de planes de la categoría estrategicos" required></textarea>
           </div>
           <div class="form-field status-field">
-            <label>Estado de la categoría:</label>
+            <label>Estado de la subcategoría:</label>
             <div class="status-toggle-container">
-              <input type="checkbox" id="category-status-toggle" v-model="form.estadoHabilitado" class="status-toggle-checkbox">
-              <label for="category-status-toggle" class="status-toggle-switch">
+              <input type="checkbox" id="subcategory-status-toggle" v-model="form.estadoHabilitado" class="status-toggle-checkbox">
+              <label for="subcategory-status-toggle" class="status-toggle-switch">
                 <span class="status-toggle-ball"></span>
               </label>
               <span class="status-toggle-badge" :class="{ 'enabled': form.estadoHabilitado, 'disabled': !form.estadoHabilitado }">
@@ -34,7 +41,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="cancel-btn" @click="$emit('close')">Cancelar</button>
-        <button type="button" class="save-btn" @click="saveCategory">Guardar</button>
+        <button type="button" class="save-btn" @click="saveSubCategory">Guardar</button>
       </div>
     </div>
   </div>
@@ -42,17 +49,27 @@
 
 <script setup>
 import { ref } from 'vue';
+import SvgIcon from '@jamescoyle/vue-icon';
+import { mdiFormatListBulleted } from '@mdi/js';
 
 const emit = defineEmits(['close', 'save']);
 
 const form = ref({
   name: '',
+  category: '',
   description: '',
   estadoHabilitado: true,
 });
 
-const saveCategory = () => {
-  if (form.value.name && form.value.description) {
+// Datos de ejemplo para las categorías
+const categories = ref([
+  { id: 1, name: 'Propiamente regulatorios' },
+  { id: 2, name: 'Estratégicos' },
+  { id: 3, name: 'Normativos' },
+]);
+
+const saveSubCategory = () => {
+  if (form.value.name && form.value.category && form.value.description) {
     emit('save', form.value);
   } else {
     alert('Por favor, complete todos los campos requeridos.');
@@ -93,11 +110,23 @@ const saveCategory = () => {
   border-bottom: 1px solid #e5e7eb;
 }
 
+.modal-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .modal-title {
   font-size: 1.2rem;
   color: #2d68ff;
   font-weight: bold;
   margin: 0;
+}
+
+.title-icon {
+  width: 24px;
+  height: 24px;
+  fill: #2d68ff;
 }
 
 .modal-close {
@@ -128,7 +157,8 @@ const saveCategory = () => {
 }
 
 .form-field input,
-.form-field textarea {
+.form-field textarea,
+.form-field select {
   width: 100%;
   padding: 0.75rem 1rem;
   border: 1px solid #e5e7eb;

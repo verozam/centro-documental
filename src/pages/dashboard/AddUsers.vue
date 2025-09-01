@@ -46,7 +46,7 @@
             <label for="region">Región</label>
             <select id="region" v-model="form.region">
               <option value="">Seleccione la región</option>
-              <option value="Region1">Región de salud occidental</option>
+              <option value="Región de salud occidental">Región de salud occidental</option>
               <option value="Region2">Región de salud central</option>
               <option value="Region3">Región de salud metropolitana</option>
               <option value="Region4">Región de salud oriental</option>
@@ -59,14 +59,14 @@
             <label for="dependencia">Dependencias</label>
             <select id="dependencia" v-model="form.dependencia">
               <option value="">Seleccione la dependencia</option>
-              <option value="Dep1">Dependencia 1</option>
+              <option value="Dependencia 1">Dependencia 1</option>
             </select>
           </div>
           <div class="form-field">
             <label for="sibasi">SIBASI</label>
             <select id="sibasi" v-model="form.sibasi">
               <option value="">Seleccione la SIBASI</option>
-              <option value="Sibasi1">SIBASI Ahuachapán</option>
+              <option value="SIBASI Ahuachapán">SIBASI Ahuachapán</option>
               <option value="Sibasi2">SIBASI Santa Ana</option>
               <option value="Sibasi3">SIBASI Sonsonate</option>
             </select>
@@ -75,7 +75,7 @@
             <label for="establecimiento">Establecimiento</label>
             <select id="establecimiento" v-model="form.establecimiento">
               <option value="">Seleccione el establecimiento</option>
-              <option value="Est1">UCSF Ahuachapán AH</option>
+              <option value="UCSF Ahuachapán AH">UCSF Ahuachapán AH</option>
             </select>
           </div>
           <div class="form-field">
@@ -142,7 +142,7 @@
               <label for="categoria">Categoría</label>
               <select id="categoria" v-model="form.categoria">
                 <option value="">Seleccione una categoría</option>
-                <option value="Cat1">Normativos</option>
+                <option value="Normativos">Normativos</option>
                 <option value="Cat2">Estratégicos</option>
                 <option value="Cat3">De organización y funciones</option>
                 <option value="Cat4">Conceptuales</option>
@@ -175,16 +175,16 @@ const form = ref({
   apellidos: '',
   correo: '',
   usuario: '',
-  tipoDocumento: '',
+  tipoDocumento: 'DUI',
   documentoIdentidad: '',
-  region: '',
-  dependencia: '',
-  sibasi: '',
-  establecimiento: '',
+  region: 'Región de salud occidental',
+  dependencia: 'Dependencia 1',
+  sibasi: 'SIBASI Ahuachapán',
+  establecimiento: 'UCSF Ahuachapán AH',
   telefono: '',
   estado: 'Habilitado',
   rol: [],
-  categoria: '',
+  categoria: 'Normativos',
   estadoHabilitado: true,
   roles: ['Colaborador de documentos Centro Virtual', 'Consulta de documentos Antifazorno'],
 });
