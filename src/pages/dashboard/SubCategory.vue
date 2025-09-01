@@ -56,7 +56,7 @@
               <td>
                 <div class="action-buttons">
                   <button class="action-btn view-btn"><svg-icon type="mdi" :path="mdiEye"></svg-icon></button>
-                  <button class="action-btn edit-btn"><svg-icon type="mdi" :path="mdiPencil"></svg-icon></button>
+                  <button class="action-btn edit-btn" @click="editSubCategory(subCategory)"><svg-icon type="mdi" :path="mdiPencil"></svg-icon></button>
                   <button class="action-btn delete-btn"><svg-icon type="mdi" :path="mdiCloseCircle"></svg-icon></button>
                 </div>
               </td>
@@ -88,6 +88,12 @@
       @close="showAddSubCategoryModal = false"
       @save="handleSaveSubCategory"
     />
+    <EditSubCategoryModal
+      v-if="showEditModal"
+      :subCategory="selectedSubCategory"
+      @close="showEditModal = false"
+      @save="handleSaveEdit"
+    />
   </div>
 </template>
 
@@ -96,6 +102,7 @@ import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import SvgIcon from '@jamescoyle/vue-icon';
 import AddSubCategoryModal from './AddSubCategoryModal.vue';
+import EditSubCategoryModal from './EditSubCategoryModal.vue';
 import {
   mdiFormatListBulleted,
   mdiBriefcaseArrowUpDownOutline,
@@ -200,6 +207,33 @@ const handleSaveSubCategory = (newSubCategory) => {
   // Ocultar el modal
   showAddSubCategoryModal.value = false;
 };
+
+const editSubCategory = (subCategory) => {
+  // Configura los datos del modal de edición
+  selectedSubCategory.value = { ...subCategory };
+  // Agrega la propiedad `descripcion` y `estadoHabilitado` si no existen para la demostración
+  if (!selectedSubCategory.value.descripcion) {
+    selectedSubCategory.value.descripcion = ''; // Valor por defecto
+  }
+  selectedSubCategory.value.estadoHabilitado = selectedSubCategory.value.estado === 'Habilitado';
+  showEditModal.value = true;
+};
+
+const handleSaveEdit = (editedSubCategory) => {
+  // Lógica para guardar los cambios en tu lista de datos
+  const index = subCategories.value.findIndex(d => d.id === editedSubCategory.id);
+  if (index !== -1) {
+    // Actualiza el estado basado en el checkbox del modal
+    editedSubCategory.estado = editedSubCategory.estadoHabilitado ? 'Habilitado' : 'Deshabilitado';
+    subCategories.value[index] = editedSubCategory;
+  }
+  
+  // Ocultar el modal
+  showEditModal.value = false;
+};
+
+const showEditModal = ref(false);
+const selectedSubCategory = ref(null);
 
 const addNewSubCategory = () => {
   // Lógica para navegar a la página de agregar subcategoría
