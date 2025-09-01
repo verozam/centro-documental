@@ -42,7 +42,12 @@ const routes = [
       {
         path: 'users',
         name: 'AdminUsers',
-        component: () => import('../pages/dashboard/Users.vue')
+        component: () => import('../pages/dashboard/UsersList.vue')
+      },
+      {
+        path: 'adduser',
+        name: 'AddUsers',
+        component: () => import('../pages/dashboard/AddUsers.vue')
       },
       {
         path: 'reports',
