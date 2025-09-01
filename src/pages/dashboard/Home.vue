@@ -46,7 +46,10 @@
       <div class="categories-grid">
         <div v-for="category in categories" :key="category.title" class="category-card">
           <div class="category-background">
-            <img :src="category.image" :alt="category.title" class="category-image" />
+            <div class="category-images-container">
+              <img :src="category.image" :alt="category.title" class="category-image default-image" />
+              <img :src="category.imageHover" :alt="category.title + ' Hover'" class="category-image hover-image" />
+            </div>
           </div>
           <p class="category-title-overlay">{{ category.title }}</p>
         </div>
@@ -119,13 +122,27 @@ const infoCards = ref([
 
 // Datos para las categorías
 const categories = ref([
-  { title: 'Normativos', image: '/src/assets/Normativos/Libro cerrado.png' },
-  { title: 'Estratégicos', image: '/src/assets/Estratégicos/Bombillo Off.png' },
-  { title: 'De organización y funciones', image: '/src/assets/De organizaciones y funciones/Handshake1.png' },
-  { title: 'Conceptuales', image: '/src/assets/Conceptuales/Conceptuales1.png' },
-  { title: 'De práctica clínica', image: '/src/assets/De práctica clínica/Practica Clinica 1.png' },
-  { title: 'Asociados a la gestión por procesos', image: '/src/assets/Asociados a la gestión por procesos/Gestión por procesos.png' },
-  { title: 'Otros documentos', image: '/src/assets/Otros documentos/Otros documentos.png' },
+  { title: 'Normativos', image: '/src/assets/Normativos/Libro cerrado.png',
+    imageHover: '/src/assets/Normativos/Libro abierto.png'
+   },
+  { title: 'Estratégicos', image: '/src/assets/Estratégicos/Bombillo Off.png',
+    imageHover: '/src/assets/Estratégicos/Bombillo On.png'
+   },
+  { title: 'De organización y funciones', image: '/src/assets/De organizaciones y funciones/Handshake1.png',
+     imageHover: '/src/assets/De organizaciones y funciones/Handshake2.png'
+   },
+  { title: 'Conceptuales', image: '/src/assets/Conceptuales/Conceptuales1.png',
+    imageHover: '/src/assets/Conceptuales/Conceptuales2.png'
+   },
+  { title: 'De práctica clínica', image: '/src/assets/De práctica clínica/Practica Clinica 1.png',
+    imageHover: '/src/assets/De práctica clínica/Practica Clinica 2.png' 
+   },
+  { title: 'Asociados a la gestión por procesos', image: '/src/assets/Asociados a la gestión por procesos/Gestión por procesos.png',
+    imageHover: '/src/assets/Asociados a la gestión por procesos/Gestión por procesos2.png' 
+   },
+  { title: 'Otros documentos', image: '/src/assets/Otros documentos/Otros documentos.png',
+    imageHover: '/src/assets/Otros documentos/Otros documentos2.png' 
+   },
   // ... agrega el resto de tus categorías
 ]);
 </script>
@@ -317,11 +334,24 @@ const categories = ref([
 }
 
 .category-card {
+  position: relative;
   text-align: center;
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid #000;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.category-card:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
 }
 
 .category-image {
@@ -363,38 +393,76 @@ const categories = ref([
 }
 
 .category-background {
-  position: absolute; /* Ocupa todo el espacio de la tarjeta */
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  /* Degradado azul claro a blanco para el fondo */
-  background: linear-gradient(180deg, #ffffffff 0%, #337ada 100%); 
-  display: flex; /* Para centrar la imagen dentro */
+  background: linear-gradient(180deg, #ffffffff 0%, #337ada 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background 0.3s ease-in-out; /* Transición para el degradado */
+}
+
+/* Estado hover del fondo */
+.category-card:hover .category-background {
+  background: linear-gradient(180deg, #dcefff 0%, #2d68ff 100%);
+}
+
+.category-images-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .category-image {
-  max-width: 90%; /* Ajusta el tamaño de la imagen */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 90%;
   max-height: 80%;
-  object-fit: contain; /* Asegura que la imagen se vea completa */
-  z-index: 1; /* Para que la imagen esté sobre el degradado */
+  object-fit: contain;
+  z-index: 1;
+  transition: opacity 0.3s ease-in-out; /* Transición para la opacidad */
+}
+
+/* Imagen por defecto: visible */
+.category-image.default-image {
+  opacity: 1;
+}
+
+/* Imagen de hover: oculta por defecto */
+.category-image.hover-image {
+  opacity: 0;
+}
+
+/* Al hacer hover en la tarjeta: */
+.category-card:hover .default-image {
+  opacity: 0; /* Oculta la imagen por defecto */
+}
+
+.category-card:hover .hover-image {
+  opacity: 1; /* Muestra la imagen de hover */
 }
 
 .category-title-overlay {
-  position: absolute; /* Se superpone en la parte inferior */
+  position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  background-color: rgb(61 127 240 / 21%); /* Azul semitransparente */
+  background-color: rgb(61 127 240 / 21%);
   color: white;
   padding: 0.5rem 0;
   margin: 0;
   font-weight: bold;
   font-size: 0.95rem;
-  z-index: 2; /* Para que el título esté sobre la imagen */
-  border-bottom-left-radius: 8px; /* Para que la barra de título tenga bordes redondeados */
+  z-index: 2;
+  border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
 
